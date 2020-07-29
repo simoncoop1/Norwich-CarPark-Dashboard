@@ -1,0 +1,14 @@
+{
+  "name": "park-dashboard",
+  "version": "1.0.0",
+  "description": "occupancy of carparks",
+  "main": "theapp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Simon Cooper",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
