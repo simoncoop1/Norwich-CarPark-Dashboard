@@ -102,8 +102,12 @@
         var $xml = $(xml),
                 //name = $xml.find('name[lang="' + lang + '"]').text(),
                 //desc = $xml.find('desc[lang="' + lang + '"]').text();
-                worksitem = $xml.find('d2lm:situationRecord').children('d2lm:pointCoordinates')
-                    .each()
+                worksitem = $xml.children('d2lm:exchange')
+                .each(function(index){
+
+                    console.log("ok");
+                });
+                console.log($xml)
                 //.each(function(index) {
                 //        //console.log($(this).attr("DESCRIPTION"));
                 //        })
