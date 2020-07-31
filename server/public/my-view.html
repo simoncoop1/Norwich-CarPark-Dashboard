@@ -102,12 +102,13 @@
         var $xml = $(xml),
                 //name = $xml.find('name[lang="' + lang + '"]').text(),
                 //desc = $xml.find('desc[lang="' + lang + '"]').text();
-                worksitem = $xml.children('d2lm:exchange')
+                worksitem = $xml.find('d2lm\\:payloadPublication').children('d2lm\\:situation')
                 .each(function(index){
 
                     console.log("ok");
+                    var lat = $(this).find('d2lm\\:latitude').text();
+                    console.log(lat);
                 });
-                console.log($xml)
                 //.each(function(index) {
                 //        //console.log($(this).attr("DESCRIPTION"));
                 //        })
