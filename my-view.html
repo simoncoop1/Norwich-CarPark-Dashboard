@@ -105,7 +105,9 @@
                 worksitem = $xml.find('d2lm\\:payloadPublication').children('d2lm\\:situation')
                 .each(function(index){
 
-                    console.log("ok"+index);
+                    console.log("ok");
+                    var lat = $(this).find('d2lm\\:latitude').text();
+                    console.log(lat);
                 });
                 //.each(function(index) {
                 //        //console.log($(this).attr("DESCRIPTION"));
