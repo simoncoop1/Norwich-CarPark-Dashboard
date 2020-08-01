@@ -110,10 +110,26 @@
                     var longi  = $(this).find('d2lm\\:longitude').text();
                     var cpIden = $(this).find('d2lm\\:carParkIdentity').text();
                     var pStatus = $(this).find('d2lm\\:carParkStatus').text();
-                    var pOccu = $(this).find('d2lm:carParkStatus').text();
-                    var datest = $(this).find('d2lm\\overallStartTime').text();
+                    var pOccu = $(this).find('d2lm\\:carParkOccupancy').text();
+                    var datest = $(this).find('d2lm\\:overallStartTime').text();
 
                     console.log(lat);
+
+                    var popup = new mapboxgl.Popup()
+                           .setHTML('<b>Road:</b>'+ cpIden+
+                                 '<br> <b>Status:</b>'+pStatus+
+                                 '<br><b>Occupancy(%):</b>'+pOccu+
+                                 '<br><b>Date: </b>'+datest);
+                            
+                         var el = document.createElement('div');
+                         el.id = 'markerWithExternalCss';
+                         // finally, create the marker
+                         var markerWithExternalCss = new mapboxgl.Marker(el)
+                            .setLngLat([longi,lat])
+                            .setPopup(popup)
+                            .addTo(map);
+                         currentMarkers.push(markerWithExternalCss);
+
                 });
                 //.each(function(index) {
                 //        //console.log($(this).attr("DESCRIPTION"));
