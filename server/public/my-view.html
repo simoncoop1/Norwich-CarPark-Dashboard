@@ -27,6 +27,10 @@
             position: absolute; z-index: 5;
         }
 
+        .cari{
+            max-height: 1em;                
+        }
+
     </style>
     <div id="over">
       <select id="fortnight" name="fortnight">
@@ -105,7 +109,6 @@
                 worksitem = $xml.find('d2lm\\:payloadPublication').children('d2lm\\:situation')
                 .each(function(index){
 
-                    console.log("ok");
                     var lat = $(this).find('d2lm\\:latitude').text();
                     var longi  = $(this).find('d2lm\\:longitude').text();
                     var cpIden = $(this).find('d2lm\\:carParkIdentity').text();
@@ -113,12 +116,79 @@
                     var pOccu = $(this).find('d2lm\\:carParkOccupancy').text();
                     var datest = $(this).find('d2lm\\:overallStartTime').text();
 
-                    console.log(lat);
+
+                    //generate string with the correct img tag for the occupancy
+                    //0-10 = 6 gray 0 colour
+                    //10-26= 5 gray 1 colour
+                    //26-42 = 4 gray 2 colour
+                    //42-58 = 3 gray 3 colour
+                    //58-74= 2 gray 4 colour
+                    //74-90= 1 gray 5 colour
+                    //90-100 = 0 gray 6 colour
+                    var ocuImg = "";
+                    if(pOccu <10){
+                        ocuImg = "<img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">";
+                    }
+                    else if(pOccu <26){
+                        ocuImg = "<img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">";
+                    }
+                    else if(pOccu <42){
+                        ocuImg = "<img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">";
+                    }
+                    else if(pOccu <58){
+                        ocuImg = "<img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">";
+                    }
+                    else if(pOccu <74){
+                        ocuImg = "<img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">";
+                    }
+                    else if(pOccu <90){
+                        ocuImg = "<img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car2.png\" class=\"cari\">";
+                    }
+                    else if(pOccu <=100){
+                        ocuImg = "<img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">\
+                            <img src=\"car1.png\" class=\"cari\">";
+                    }
+
 
                     var popup = new mapboxgl.Popup()
-                           .setHTML('<b>Road:</b>'+ cpIden+
+                        .setHTML(ocuImg +
+                                 '<br><b>Road:</b>'+ cpIden+
                                  '<br> <b>Status:</b>'+pStatus+
-                                 '<br><b>Occupancy(%):</b>'+pOccu+
+                               '<br><b>Occupancy(%):</b>'+pOccu+
                                  '<br><b>Date: </b>'+datest);
                             
                          var el = document.createElement('div');
