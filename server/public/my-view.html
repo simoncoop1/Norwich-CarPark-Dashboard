@@ -30,13 +30,26 @@
         .cari{
             max-height: 1em;                
         }
+		.overlay {a
+            box-sizing: border-box;
+            border: 20px solid #f00;
+			position:fixed;
+			left:20%;
+			right:20%;
+			top:30px;
+			bottom:30px;
+			background:rgba(255, 0, 0, 0.7); /* use this */
+            display:none;
+		}
+        .my-overlay-button{
+            position:absolute; top:0; right:0
+        }
 
     </style>
     <div id="over">
-      <select id="fortnight" name="fortnight">
-      <option value="all">Show All</option>
-      <option value="fortnight">+2 week only</option>
-      </select></div>
+      <button type="button" onclick="togglefadeo()">Show Carparks!</button>
+      <div class="overlay">thing<button type="button" class="my-overlay-button" onclick="togglefadeo()">close</button></div>
+    </div>
     <div id='map'></div>
     <script>
         //Add your LocationIQ Maps Access Token here (not the API token!)
@@ -303,6 +316,10 @@
             });
 
 
+        }
+
+        function togglefadeo(){
+            $(".overlay").fadeToggle();
         }
 
         loadPlannedRW("");
