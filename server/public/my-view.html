@@ -42,14 +42,20 @@
             display:none;
 		}
         .my-overlay-button{
-            position:absolute; top:0; right:0
+            position:absolute; top:0; right:0;
+        }
+        .mySort{
+            cursor:pointer;
+            color:#261da3;
+            font-family:"Courier New", Courier, monospace;
         }
 
     </style>
     <div id="over">
       <button type="button" onclick="togglefadeo()">Show Carparks!</button>
       <div class="overlay">
-          <button type="button" class="my-overlay-button" onclick="togglefadeo()">close</button><br>
+          sort by: <a class='mySort' href"#" onclick="sortByOcu();">name</a> <a class='mySort' href'#' onclick="sortByNm();">occupancy</a>
+          <button type="button" class="my-overlay-button" onclick="togglefadeo();">close</button><br>          
           <ol class="park-ol">              
           </ol>
       </div>
@@ -201,10 +207,8 @@
                     }
 
                     //add a list view of the car parks
-                    var node =  document.createElement("li");
-                    var testnode = document.createTextNode("Car Part 26");
-                    node.appendChild(testnode);
-                    $(".park-ol").append(node);
+                    var e = $("<li class='park-li'>"+ocuImg+","+cpIden+","+pStatus+","+datest+"</li>");
+                    $(".park-ol").append(e);
 
 
                     var popup = new mapboxgl.Popup()
@@ -330,6 +334,30 @@
 
         function togglefadeo(){
             $(".overlay").fadeToggle();
+        }
+
+        function sortByOcu(){
+            
+            var ul = $(".park-ol");
+            var li = ul.children("li");
+            li.detach().sort(function(a,b){
+                return $(a).children("img[src='car1.png']").length - $(b).children("img[src='car1.png']").length;
+            });
+            ul.append(li);
+
+
+        }
+
+        function sortByNm(){
+            var ul = $(".park-ol");
+            var li = ul.children("li");
+            li.detach().sort(function(a,b){
+                console.log($(a).text().trim());
+                return $(a).text().localeCompare($(b).text());
+                //return $(a).children("img[src='car1.png']").length - $(b).children("img[src='car1.png']").length;
+            });
+            ul.append(li);
+        
         }
 
         loadPlannedRW("");
