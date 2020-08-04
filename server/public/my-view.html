@@ -48,7 +48,11 @@
     </style>
     <div id="over">
       <button type="button" onclick="togglefadeo()">Show Carparks!</button>
-      <div class="overlay">thing<button type="button" class="my-overlay-button" onclick="togglefadeo()">close</button></div>
+      <div class="overlay">
+          <button type="button" class="my-overlay-button" onclick="togglefadeo()">close</button><br>
+          <ol class="park-ol">              
+          </ol>
+      </div>
     </div>
     <div id='map'></div>
     <script>
@@ -195,6 +199,12 @@
                             <img src=\"car1.png\" class=\"cari\">\
                             <img src=\"car1.png\" class=\"cari\">";
                     }
+
+                    //add a list view of the car parks
+                    var node =  document.createElement("li");
+                    var testnode = document.createTextNode("Car Part 26");
+                    node.appendChild(testnode);
+                    $(".park-ol").append(node);
 
 
                     var popup = new mapboxgl.Popup()
