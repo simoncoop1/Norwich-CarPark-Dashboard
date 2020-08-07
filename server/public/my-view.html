@@ -259,7 +259,7 @@
         var $xml = $(xml);
                 //name = $xml.find('name[lang="' + lang + '"]').text(),
                 //desc = $xml.find('desc[lang="' + lang + '"]').text();               
-               $('#distances').html("");
+            $('#distances').html("<ul class='distList'></ul>");
 
                 var worksitem = $xml.find('d2lm\\:payloadPublication').children('d2lm\\:situation')
                 .each(function(index){
@@ -268,8 +268,20 @@
                     var longi  = $(this).find('d2lm\\:longitude').text();
                     var cpIden = $(this).find('d2lm\\:carParkIdentity').text();
 
-                    var outpre = "56 miles, " + cpIden;
-                    $('#distances').append("56 Miles, castle<br>");
+                    var d = myHaversine(geojson['features'][0]['geometry']['coordinates'],[longi,lat])
+
+                    var outpre = "<li class='dist'>"+ d.toFixed(3) + "miles " + cpIden.substr(0,20)+"</li>";
+                    $('.distList').append(outpre);
+                    //geojson['features'][0]['geometry']['coordinates']= [1,1];
+
+                    //now sort it
+                    var ul = $(".distList");
+                    var li = ul.children("li");
+                    li.detach().sort(function(a,b){
+                        return $(a).text().localeCompare($(b).text());
+                    });
+                    ul.append(li);
+
                 })
         }
 
@@ -293,7 +305,6 @@
             li.detach().sort(function(a,b){
                 //console.log($(a).text().trim());
                 return $(a).text().localeCompare($(b).text());
-                //return $(a).children("img[src='car1.png']").length - $(b).children("img[src='car1.png']").length;
             });
             ul.append(li);
         }
@@ -400,9 +411,10 @@ map.on('load', function() {
                 map.once('touchend', onUp);
             });
 });
-
-
-
+    console.log(geojson['features'][0]['geometry']['coordinates']);
+    geojson['features'][0]['geometry']['coordinates']= [1,1];
+    console.log(geojson['features'][0]['geometry']['coordinates']);
+    console.log(myHaversinet());
 
         loadPlannedRW("");
     </script>
