@@ -227,7 +227,6 @@
                     var e = $("<li class='park-li'>"+ocuImg+cpIden+","+pStatus+","+datest+"</li>");
                     $(".park-ol").append(e);
 
-
                     var popup = new mapboxgl.Popup()
                         .setHTML(ocuImg +
                                  '<br><b>Road:</b>'+ cpIden+
@@ -259,9 +258,8 @@
         function parseXmlDist(xml, ar){
         var $xml = $(xml);
                 //name = $xml.find('name[lang="' + lang + '"]').text(),
-                //desc = $xml.find('desc[lang="' + lang + '"]').text();
-                
-                $('#distances').val("");
+                //desc = $xml.find('desc[lang="' + lang + '"]').text();               
+               $('#distances').html("");
 
                 var worksitem = $xml.find('d2lm\\:payloadPublication').children('d2lm\\:situation')
                 .each(function(index){
@@ -271,12 +269,8 @@
                     var cpIden = $(this).find('d2lm\\:carParkIdentity').text();
 
                     var outpre = "56 miles, " + cpIden;
-                    $('#distances').val(function(){
-                        return this.value + '<br>' + outpre;
-                    })
-
+                    $('#distances').append("56 Miles, castle<br>");
                 })
-
         }
 
         function togglefadeo(){
@@ -344,7 +338,8 @@
 
         //display distances
         distances.style.display = 'block';
-        distances.innerHTML = "This is where the distances go "+ myHaversine();
+        //distances.innerHTML = "This is where the distances go "+ myHaversine();
+        loadDistances("");
 
     canvas.style.cursor = '';
      
