@@ -7,6 +7,7 @@
         <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
         <script src='https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.js'></script>
         <link href='https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.css' rel='stylesheet' />
+        <script src="my-haversine.js"></script>        
     </head>
     <body>
     Hello World.
@@ -30,7 +31,7 @@
         .cari{
             max-height: 1em;                
         }
-		.overlay {a
+		.overlay {
             box-sizing: border-box;
             border: 20px solid #f00;
 			position:fixed;
@@ -50,7 +51,19 @@
             color:#261da3;
             font-family:"Courier New", Courier, monospace;
         }
-
+        .distances{
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            position: absolute;
+            bottom: 40px;
+            right: 10px;
+            padding: 5px 10px;
+            margin: 0;
+            font-size: 11px;
+            line-height: 18px;
+            border-radius: 3px;
+            display: none;
+        }
     </style>
     <div id="over">
       <button type="button" onclick="togglefadeo()">Show Carparks!</button>
@@ -62,9 +75,12 @@
       </div>
     </div>
     <div id='map'></div>
+    <pre id='distances' class='distances'</pre>
     <script>
+        var distances = document.getElementById('distances');
+
         //Add your LocationIQ Maps Access Token here (not the API token!)
-        locationiqKey = 'pk.5dcc7345e3b6b79383e6021a44bed5bb';
+        var locationiqKey = 'pk.5dcc7345e3b6b79383e6021a44bed5bb';
         //Define the map and configure the map's theme
         var map = new mapboxgl.Map({
             container: 'map',
@@ -229,107 +245,37 @@
                          currentMarkers.push(markerWithExternalCss);
 
                 });
-                //.each(function(index) {
-                //        //console.log($(this).attr("DESCRIPTION"));
-                //        })
-                //.each(function(index){
-                        //console.log($(this).attr("SDATE"));
-                //})
-                //.each(function(index){
-                //        var cc =$(this).find("EASTNORTH_Collection").find("EASTNORTH");
-                        //console.log(cc.attr("CENTRE_EASTING")+","+cc.attr("CENTRE_NORTHING"));
-                        
-                        //create a osgb coordinate
-               //         osgb=new GT_OSGB();
-                        //osgb.setGridCoordinates(526217, 223873);
-               //         osgb.setGridCoordinates(cc.attr("CENTRE_EASTING"), cc.attr("CENTRE_NORTHING"));
-    
-                        //convert to a wgs84 coordinate
-               //         wgs84 = osgb.getWGS84();
-
-                        //now work with wgs84.latitude and wgs84.longitude
-                        //console.log("Latitude "+ wgs84.latitude + " Longitude "+wgs84.longitude);
-
-    	                 // Create a popup
-               //          var therd = $(this).find("ROAD_Collection").find("ROAD").attr("ROAD_NUMBER");
-                //         var thedesc = $(this).attr("DESCRIPTION");
-                //         var thestart = $(this).attr("SDATE");
-                //         var theend = $(this).attr("EDATE");
-                //         var thedelay = $(this).attr("EXPDEL");
-
-                         //parsing the date
-                //         var strt = new Date($(this).attr("SDATE").replace(/-/g,"/"));
-                //         var end = new Date($(this).attr("EDATE").replace(/-/g,"/"));
-                         //console.log(datet);
-                //         var fortwk = new Date();
-                //         fortwk.setDate(fortwk.getDate()+14);
-                //         var now = new Date();
-                //         if($("#fortnight").val()=="fortnight"){
-                //            if (strt > fortwk | end < now){
-                                //console.log("we skip");
-                //                return;
-                //            }
-                //         }
-                //
-                //         var popup = new mapboxgl.Popup()
-                //             .setHTML('<b>Road:</b>'+ therd+
-                //                 '<br> <b>Description:</b>'+thedesc+
-                //                 '<br><b>Start/End: </b>'+thestart+"<br>"+theend+
-                //                 '<br><b>Delay: </b>'+thedelay);
-                //            
-                //         var el = document.createElement('div');
-                //         el.id = 'markerWithExternalCss';
-                //         // finally, create the marker
-                //         var markerWithExternalCss = new mapboxgl.Marker(el)
-                //            .setLngLat([wgs84.longitude,wgs84.latitude])
-                //            .setPopup(popup)
-                //            .addTo(map);
-                //         currentMarkers.push(markerWithExternalCss);
-
-                //});
-
-           //console.log(works); 
-           //for(var arec of worksitem){
-           //    //console.log(arec);
-           //}
         }
 
-        $( "#fortnight").change(function() {           
-            //remove markers and update our maintained list
-            for (s of currentMarkers){
-                s.remove();
-            }
-            currentMarkers.length=0;
-
-            //now load the markers
-            var sel = $(this).val();
-            if(sel == "fortnight"){
-                console.log("load fortnight");
-                loadPlannedRW();
-            }
-            else{
-                console.log("load all");
-                loadPlannedRW();
-            }
-        });
-
-        //coors request denies this, use an js library instead, calculatel local.
-        function convertco(eastings, northings){
-            $.ajax({ 
-                    type: 'GET', 
-                    url: 'https://www.bgs.ac.uk/data/webservices/CoordConvert_LL_BNG.cfc', 
-                    data: { northing : 245739,
-                            easting : 586500,
-                            method : "BNGtoLatLng"}, 
-                    dataType: 'json',
-                    success: function (data) {
-                                console.log("longitude "
-                                + data['LONGITUDE']
-                                + "latitude "
-                                + data['LATITUDE']);   
-                    }
+        function loadDistances(ar){
+            $.ajax({
+                type: "GET",
+                url: 'content.xml',
+                dataType: "xml",
+                success: function (xml) { parseXmlDist(xml, ar); }
             });
+        }
 
+        function parseXmlDist(xml, ar){
+        var $xml = $(xml);
+                //name = $xml.find('name[lang="' + lang + '"]').text(),
+                //desc = $xml.find('desc[lang="' + lang + '"]').text();
+                
+                $('#distances').val("");
+
+                var worksitem = $xml.find('d2lm\\:payloadPublication').children('d2lm\\:situation')
+                .each(function(index){
+
+                    var lat = $(this).find('d2lm\\:latitude').text();
+                    var longi  = $(this).find('d2lm\\:longitude').text();
+                    var cpIden = $(this).find('d2lm\\:carParkIdentity').text();
+
+                    var outpre = "56 miles, " + cpIden;
+                    $('#distances').val(function(){
+                        return this.value + '<br>' + outpre;
+                    })
+
+                })
 
         }
 
@@ -345,8 +291,6 @@
                 return $(a).children("img[src='car1.png']").length - $(b).children("img[src='car1.png']").length;
             });
             ul.append(li);
-
-
         }
 
         function sortByNm(){
@@ -358,8 +302,112 @@
                 //return $(a).children("img[src='car1.png']").length - $(b).children("img[src='car1.png']").length;
             });
             ul.append(li);
-        
         }
+
+
+        //add code for moving dot
+        var canvas = map.getCanvasContainer();
+
+        var geojson = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [0, 0]
+                    }
+                }
+            ]
+        };
+
+    function onMove(e) {
+        var coords = e.lngLat;
+     
+        // Set a UI indicator for dragging.
+        canvas.style.cursor = 'grabbing';
+     
+        // Update the Point feature in `geojson` coordinates
+        // and call setData to the source layer `point` on it.
+        geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
+        map.getSource('point').setData(geojson);
+    }
+ 
+    function onUp(e) {
+        var coords = e.lngLat;
+     
+        // Print the coordinates of where the point had
+        // finished being dragged to on the map.
+            //coordinates.style.display = 'block';
+        //coordinates.innerHTML =
+            //'Longitude: ' + coords.lng + '<br />Latitude: ' + coords.lat;
+
+        //display distances
+        distances.style.display = 'block';
+        distances.innerHTML = "This is where the distances go "+ myHaversine();
+
+    canvas.style.cursor = '';
+     
+    // Unbind mouse/touch events
+    map.off('mousemove', onMove);
+    map.off('touchmove', onMove);
+}
+
+map.on('load', function() {
+
+        //get name and coors from xml
+
+
+
+        // Add a single point to the map
+        map.addSource('point', {
+                    'type': 'geojson',
+                    'data': geojson
+                });
+
+        map.addLayer({
+            'id': 'point',
+            'type': 'circle',
+            'source': 'point',
+            'paint': {
+                'circle-radius': 10,
+                'circle-color': '#3887be'
+            }
+        });
+     
+    // When the cursor enters a feature in the point layer, prepare for dragging.
+        map.on('mouseenter', 'point', function() {
+            map.setPaintProperty('point', 'circle-color', '#3bb2d0');
+            canvas.style.cursor = 'move';
+        });
+     
+    map.on('mouseleave', 'point', function() {
+        map.setPaintProperty('point', 'circle-color', '#3887be');
+        canvas.style.cursor = '';
+    });
+     
+    map.on('mousedown', 'point', function(e) {
+        // Prevent the default map drag behavior.
+            e.preventDefault();
+         
+        canvas.style.cursor = 'grab';
+         
+        map.on('mousemove', onMove);
+        map.once('mouseup', onUp);
+    });
+    map.on('touchstart', 'point', function(e) {
+                if (e.points.length !== 1) return;
+                 
+                // Prevent the default map drag behavior.
+                e.preventDefault();
+                 
+                map.on('touchmove', onMove);
+                map.once('touchend', onUp);
+            });
+});
+
+
+
 
         loadPlannedRW("");
     </script>
