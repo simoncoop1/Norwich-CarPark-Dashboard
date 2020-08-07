@@ -1,8 +1,16 @@
-function myHaversine(){
-    var long1 = -1.45723343;
-    var lat1 = 52.27519523;
-    var long2 = -1.45723343;
-    var lat2 = 52.1;
+//c1 is [longitude1,latitude1]
+//c2 is [longitude2,latitude2]
+//the function works out distance(meters) between
+function myHaversine(c1,c2){
+    //var long1 = -1.45723343;
+    //var lat1 = 52.27519523;
+    //var long2 = -1.45723343;
+    //var lat2 = 52.1;
+    var long1 = c1[0];
+    var lat1 = c1[1];
+    var long2 = c2[0];
+    var lat2 = c2[1];
+    
     var ψ1 = lat1 * (Math.PI / 180);
     var ψ2 = lat2 * (Math.PI/180);
     var λ1 = long1 * (Math.PI/180);
@@ -17,3 +25,10 @@ function myHaversine(){
 
     return d;
 }
+
+function myHaversinet(){
+    return myHaversine([-1.45723343,52.27519523],[-1.45723343,52.1]);
+}
+
+
+
